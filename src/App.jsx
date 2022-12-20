@@ -1,7 +1,6 @@
 import React from "react";
-import { nanoid } from "nanoid";
+import CardsList from "./components/CardsList";
 
 export default function App() {
-  console.log(nanoid())
-  return <h1>ddd</h1>
+  return <CardsList />;
 }

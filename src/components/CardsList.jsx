@@ -9,10 +9,12 @@ export default function CardsList() {
     <Card
       name={item.name}
       budget_name={item.budget_name}
-      spent={item.spent.value + item.spent.currency}
-      available_to_spend={
-        item.available_to_spend.value + item.available_to_spend.currency
-      }
+      spent={item.spent.value}
+      available_to_spend={item.available_to_spend.value}
+      currency={'SGD'}
+      owner_name={item.owner_name}
+      card_type={item.card_type.toUpperCase()}
+      expiry={item.expiry}
       key={item.id}
     />
   ));
