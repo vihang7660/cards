@@ -1,0 +1,24 @@
+.cardsList {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.filter-button {
+  padding-right: auto;
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: none;
+  background-color: rgb(248, 246, 246);
+  cursor: pointer;
+  font-family: sans-serif;
+  font-size: 16px;
+  color: black;
+  padding: 8px 12px;
+}
+
+.filter-button:hover {
+  background-color: lightgrey;
+}
