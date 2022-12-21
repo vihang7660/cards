@@ -6,6 +6,7 @@ import Navbar from "./components/Navbar";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import YourCards from "./components/YourCards";
 import BlockedCards from "./components/BlockedCards";
+import Header from "./components/Header";
 
 export default function App() {
   const state = useCards();
@@ -14,6 +15,7 @@ export default function App() {
       {state.isFilterOpen && <Filter />}
       <div className="page">
         <BrowserRouter>
+          <Header />
           <Navbar />
           <Routes>
             <Route path="/" element={<CardsList />} />

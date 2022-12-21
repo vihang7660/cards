@@ -9,23 +9,15 @@ export default function CardsList() {
   const state = useCards();
   const dispatch = useCardsDispatch();
 
-  /* const [info, setInfo] = useState([...state.cardsInfo.slice(0, 5)]); */
   const [page, setPage] = useState(1);
-  /* const rows = 5; */
 
-  /* useEffect(() => {
-    setInfo([...state.cardsInfo.slice(0, page * rows)]);
-  }, [page]); */
-
-  console.log(state.isFiltered)
+  console.log(state.isFiltered);
 
   useEffect(() => {
     if (!state.isFiltered) {
-      dispatch({type:'addingScrollData', page })
+      dispatch({ type: "addingScrollData", page });
     }
   }, [page]);
-
-
 
   const handlescroll = () => {
     if (
@@ -37,25 +29,16 @@ export default function CardsList() {
   };
 
   useEffect(() => {
-    window.addEventListener('scroll', handlescroll)
-  }, [])
-
-
-
-
-
-
-
-
-
+    window.addEventListener("scroll", handlescroll);
+  }, []);
 
   function handleSearch(e) {
     dispatch({ type: "searching", text: e.target.value });
   }
 
   function getOwner(ownerID) {
-    dispatch({type: 'gettingOwnerCard', ownerID})
-    dispatch({type: 'filteringOff'})
+    dispatch({ type: "gettingOwnerCard", ownerID });
+    dispatch({ type: "filteringOff" });
   }
 
   function handleFilterBox(event) {
@@ -86,10 +69,14 @@ export default function CardsList() {
     <main onClick={() => dispatch({ type: "hideFilterBox" })}>
       <div className="searchBar">
         <form className="searchForm" onSubmit={(e) => e.preventDefault()}>
-          <input onChange={(e) => {
-            handleSearch(e)
-            dispatch({type: 'filteringOff'})
-          }} value={state.searchText} type="text" />
+          <input
+            onChange={(e) => {
+              handleSearch(e);
+              dispatch({ type: "filteringOff" });
+            }}
+            value={state.searchText}
+            type="text"
+          />
         </form>
         <button className="filter-button" onClick={handleFilterBox}>
           <BsFilter size={25} /> <div>Filter</div>
