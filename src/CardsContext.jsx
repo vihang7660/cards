@@ -58,6 +58,13 @@ function reducer(state, action) {
         card.name.toLowerCase().includes(action.text.toLowerCase())
       ),
     };
+  } else if (action.type === "gettingOwnerCard") {
+    return {
+      ...state,
+      cardsInfo: state.fixedCardData.filter(
+        (card) => card.owner_id === action.ownerID
+      ),
+    };
   }
 }
 

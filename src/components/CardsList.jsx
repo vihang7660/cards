@@ -14,6 +14,10 @@ export default function CardsList() {
     dispatch({ type: "searching", text: e.target.value });
   }
 
+  function getOwner(ownerID) {
+    dispatch({type: 'gettingOwnerCard', ownerID})
+  }
+
   function handleFilterBox(event) {
     const tempBtn = event.target.getBoundingClientRect();
     event.stopPropagation();
@@ -30,10 +34,12 @@ export default function CardsList() {
       available_to_spend={item.available_to_spend.value}
       currency={"SGD"}
       owner_name={item.owner_name}
+      owner_id={item.owner_id}
       card_type={item.card_type}
       expiry={item.expiry}
       key={item.id}
       limit={item.limit}
+      getOwner={getOwner}
     />
   ));
   return (

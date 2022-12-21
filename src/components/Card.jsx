@@ -13,13 +13,15 @@ export default function Card({
   owner_name,
   expiry,
   card_type,
-  limit
+  limit,
+  getOwner,
+  owner_id,
 }) {
   const state = useCards();
   let capacity = available_to_spend + spent;
 
   return (
-    <section className="card-container">
+    <section className="card-container" onClick={() => getOwner(owner_id)}>
       <div className="header">
         <h2>{name}</h2>
         <div className="owner-info">
@@ -34,7 +36,11 @@ export default function Card({
 
       <div className="card-type">
         <div className="type">{card_type.toUpperCase()}</div>
-        <div>{card_type === "burner" ? `Expires: ${expiry}`: `December Limit: ${limit}`}</div>
+        <div>
+          {card_type === "burner"
+            ? `Expires: ${expiry}`
+            : `December Limit: ${limit}`}
+        </div>
       </div>
 
       <div className="capacity-visualization">
