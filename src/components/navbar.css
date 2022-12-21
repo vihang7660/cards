@@ -1,0 +1,19 @@
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #333;
+  color: #fff;
+  padding: 20px;
+}
+
+.navbar__button {
+  color: #fff;
+  text-decoration: none;
+  font-size: 16px;
+  transition: background-color 0.2s;
+}
+
+.navbar__button:hover {
+  background-color: #444;
+}

@@ -65,14 +65,21 @@ function reducer(state, action) {
         (card) => card.owner_id === action.ownerID
       ),
     };
+  } else if (action.type === "addingScrollData") {
+    return { ...state, cardsInfo: [...data.slice(0, action.page * rows)] };
+  } else if (action.type === "filteringOff") {
+    return {...state, isFilterOpen: false, isFiltered: true}
   }
 }
 
+const rows = 5;
+
 const initialState = {
-  cardsInfo: data,
+  cardsInfo: data.slice(0, 5),
   fixedCardData: data,
   isFilterOpen: false,
   filterCoordinates: {},
   formData: { subscription: true, burner: true, cardholder: "" },
   searchText: "",
+  isFiltered: false,
 };

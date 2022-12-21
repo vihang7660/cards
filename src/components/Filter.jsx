@@ -82,7 +82,10 @@ export default function Filter() {
         </select>
       </div>
       <div>
-        <button type="submit" onClick={handleSubmit}>
+        <button type="submit" onClick={() => {
+          handleSubmit()
+          dispatch({type: 'filteringOff'})
+        }}>
           Apply
         </button>
         <button type="reset" onClick={handleResetForm}>Clear</button>
