@@ -6,19 +6,21 @@ import { useCards, useCardsDispatch } from "../CardsContext";
 import Filter from "./Filter";
 
 export default function CardsList() {
-  const [isShowingFilter, setShowingFilter] = useState(false);
-
+  /* const [searchText, setSearchText] = useState('') */
   const state = useCards();
   const dispatch = useCardsDispatch();
 
-  function handleFilterBox(event) {
-    const tempBtn = event.target.getBoundingClientRect();
-    event.stopPropagation()
-    let {top, left}  = tempBtn
-    dispatch({type: 'gettingCoordinates', top, left})
-    dispatch({type: 'displayingFilter'})
+  function handleSearch(e) {
+    dispatch({ type: "searching", text: e.target.value });
   }
 
+  function handleFilterBox(event) {
+    const tempBtn = event.target.getBoundingClientRect();
+    event.stopPropagation();
+    let { top, left } = tempBtn;
+    dispatch({ type: "gettingCoordinates", top, left });
+    dispatch({ type: "displayingFilter" });
+  }
 
   let cardsList = state.cardsInfo.map((item) => (
     <Card
@@ -35,11 +37,15 @@ export default function CardsList() {
     />
   ));
   return (
-    <main onClick={() => dispatch({type: 'hideFilterBox'})}>
-      {isShowingFilter && <Filter />}
-      <button className="filter-button" onClick={handleFilterBox}>
-        <BsFilter size={25} /> <div>Filter</div>
-      </button>
+    <main onClick={() => dispatch({ type: "hideFilterBox" })}>
+      <div className="searchBar">
+        <form className="searchForm" onSubmit={(e) => e.preventDefault()}>
+          <input onChange={handleSearch} value={state.searchText} type="text" />
+        </form>
+        <button className="filter-button" onClick={handleFilterBox}>
+          <BsFilter size={25} /> <div>Filter</div>
+        </button>
+      </div>
       <div className="cardsList">{cardsList}</div>
     </main>
   );

@@ -50,6 +50,14 @@ function reducer(state, action) {
       formData: action.formdata,
       cardsInfo: filterCardData,
     };
+  } else if (action.type === "searching") {
+    return {
+      ...state,
+      searchText: action.text,
+      cardsInfo: state.fixedCardData.filter((card) =>
+        card.name.toLowerCase().includes(action.text.toLowerCase())
+      ),
+    };
   }
 }
 
@@ -59,4 +67,5 @@ const initialState = {
   isFilterOpen: false,
   filterCoordinates: {},
   formData: { subscription: true, burner: true, cardholder: "" },
+  searchText: "",
 };

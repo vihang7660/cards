@@ -10,7 +10,6 @@ main {
 
 .filter-button {
   padding-right: auto;
-  margin-left: auto;
   display: flex;
   align-items: center;
   gap: 10px;
@@ -25,4 +24,11 @@ main {
 
 .filter-button:hover {
   background-color: lightgrey;
+}
+
+.searchBar {
+  display: flex;
+  align-items: center;
+  justify-content: end;
+  gap: 20px;
 }

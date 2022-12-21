@@ -38,6 +38,7 @@ export default function Filter() {
 
   return (
     <form
+    className="filterForm"
       onSubmit={(e) => e.preventDefault()}
       style={{
         top: state.filterCoordinates.top + 40,
