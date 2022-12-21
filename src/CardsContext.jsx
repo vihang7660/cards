@@ -25,9 +25,21 @@ export function useCardsDispatch() {
   return useContext(CardsDispatchContext);
 }
 
-function reducer(state, action) {}
+function reducer(state, action) {
+  if (action.type === "gettingCoordinates") {
+    return {
+      ...state,
+      filterCoordinates: { top: action.top, left: action.left },
+    };
+  } else if (action.type === "displayingFilter") {
+    return { ...state, isFilterOpen: true };
+  } else if (action.type === 'hideFilterBox') {
+    return {...state, isFilterOpen: false}
+  }
+}
 
 const initialState = {
   cardsInfo: data,
+  isFilterOpen: false,
+  filterCoordinates: {},
 };
-

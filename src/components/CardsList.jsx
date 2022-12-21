@@ -1,11 +1,24 @@
-import React from "react";
+import React, { useState } from "react";
 import Card from "./Card";
 import "./cardsList.css";
 import { BsFilter } from "react-icons/bs";
-import { useCards } from "../CardsContext";
+import { useCards, useCardsDispatch } from "../CardsContext";
+import Filter from "./Filter";
 
 export default function CardsList() {
+  const [isShowingFilter, setShowingFilter] = useState(false);
+
   const state = useCards();
+  const dispatch = useCardsDispatch();
+
+  function handleFilterBox(event) {
+    const tempBtn = event.target.getBoundingClientRect();
+    event.stopPropagation()
+    let {top, left}  = tempBtn
+    dispatch({type: 'gettingCoordinates', top, left})
+    dispatch({type: 'displayingFilter'})
+  }
+
 
   let cardsList = state.cardsInfo.map((item) => (
     <Card
@@ -21,8 +34,9 @@ export default function CardsList() {
     />
   ));
   return (
-    <main>
-      <button className="filter-button">
+    <main onClick={() => dispatch({type: 'hideFilterBox'})}>
+      {isShowingFilter && <Filter />}
+      <button className="filter-button" onClick={handleFilterBox}>
         <BsFilter size={25} /> <div>Filter</div>
       </button>
       <div className="cardsList">{cardsList}</div>
