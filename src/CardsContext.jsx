@@ -33,13 +33,30 @@ function reducer(state, action) {
     };
   } else if (action.type === "displayingFilter") {
     return { ...state, isFilterOpen: true };
-  } else if (action.type === 'hideFilterBox') {
-    return {...state, isFilterOpen: false}
+  } else if (action.type === "hideFilterBox") {
+    return { ...state, isFilterOpen: false };
+  } else if (action.type === "filteringCards") {
+    const filterCardData = state.fixedCardData.filter((card) => {
+      return (
+        ((action.formdata.subscription && card.card_type === "subscription") ||
+          (action.formdata.burner && card.card_type === "burner")) &&
+        (!action.formdata.cardholder ||
+          card.owner_name === action.formdata.cardholder)
+      );
+    });
+
+    return {
+      ...state,
+      formData: action.formdata,
+      cardsInfo: filterCardData,
+    };
   }
 }
 
 const initialState = {
   cardsInfo: data,
+  fixedCardData: data,
   isFilterOpen: false,
   filterCoordinates: {},
+  formData: { subscription: true, burner: true, cardholder: "" },
 };

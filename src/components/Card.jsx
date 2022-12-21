@@ -3,6 +3,7 @@ import { useCards } from "../CardsContext";
 import "./card.css";
 import { BsDot } from "react-icons/bs";
 import { GiBurningEye } from "react-icons/gi";
+import { MdAutorenew } from "react-icons/md";
 
 export default function Card({
   name,
@@ -12,6 +13,7 @@ export default function Card({
   owner_name,
   expiry,
   card_type,
+  limit
 }) {
   const state = useCards();
   let capacity = available_to_spend + spent;
@@ -23,12 +25,16 @@ export default function Card({
         <div className="owner-info">
           {owner_name} <BsDot /> {budget_name}
         </div>
-        <GiBurningEye className="logo" size={35} />
+        {card_type === "burner" ? (
+          <GiBurningEye className="logo" size={35} />
+        ) : (
+          <MdAutorenew className="logo" size={35} />
+        )}
       </div>
 
       <div className="card-type">
-        <div className="type">{card_type}</div>
-        <div>Expires: {expiry}</div>
+        <div className="type">{card_type.toUpperCase()}</div>
+        <div>{card_type === "burner" ? `Expires: ${expiry}`: `December Limit: ${limit}`}</div>
       </div>
 
       <div className="capacity-visualization">

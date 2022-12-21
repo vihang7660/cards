@@ -16,7 +16,6 @@ export default [
     },
     card_type: "burner",
     expiry: "9 feb",
-    limit: 100,
     status: "active",
   },
   {
@@ -33,9 +32,8 @@ export default [
       value: 1000,
       currency: "SGD",
     },
-    card_type: "burner",
-    expiry: "9 feb",
-    limit: 100,
+    card_type: "subscription",
+    limit: "10 SGD",
     status: "active",
   },
   {
@@ -54,7 +52,6 @@ export default [
     },
     card_type: "burner",
     expiry: "9 feb",
-    limit: 100,
     status: "active",
   },
   {
@@ -71,9 +68,8 @@ export default [
       value: 1000,
       currency: "SGD",
     },
-    card_type: "burner",
-    expiry: "9 feb",
-    limit: 100,
+    card_type: "subscription",
+    limit: "100 SGD",
     status: "active",
   },
   {

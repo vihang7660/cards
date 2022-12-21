@@ -28,9 +28,10 @@ export default function CardsList() {
       available_to_spend={item.available_to_spend.value}
       currency={"SGD"}
       owner_name={item.owner_name}
-      card_type={item.card_type.toUpperCase()}
+      card_type={item.card_type}
       expiry={item.expiry}
       key={item.id}
+      limit={item.limit}
     />
   ));
   return (

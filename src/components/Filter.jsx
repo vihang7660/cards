@@ -1,52 +1,90 @@
-import React from "react";
-import { useCards } from "../CardsContext";
+import React, { useState } from "react";
+import { useCards, useCardsDispatch } from "../CardsContext";
+import { nanoid } from "nanoid";
 import "./filter.css";
 
 export default function Filter() {
-  const [subscription, setSubscription] = React.useState(false);
-  const [burner, setBurner] = React.useState(false);
-  const [cardholder, setCardholder] = React.useState("");
-  const state = useCards()
+  const state = useCards();
+  const [filterFormData, setFormData] = useState({
+    subscription: state.formData.subscription,
+    burner: state.formData.burner,
+    cardholder: state.formData.cardholder,
+  });
 
-  // Event handler functions to update the state variables when the form elements are changed
-  const handleSubscriptionChange = (event) => {
-    setSubscription(event.target.checked);
-  };
+  const dispatch = useCardsDispatch();
 
-  const handleBurnerChange = (event) => {
-    setBurner(event.target.checked);
-  };
+  function handleFormDataChange(e) {
+    const { name, value, type, checked } = e.target;
+    setFormData((prevState) => {
+      return {
+        ...prevState,
+        [name]: type === "checkbox" ? checked : value,
+      };
+    });
+  }
 
-  const handleCardholderChange = (event) => {
-    setCardholder(event.target.value);
-  };
+  function handleResetForm(e) {
+    e.preventDefault()
+    setFormData({ subscription: true, burner: true, cardholder: "" })
+  }
+
+  function handleSubmit() {
+    dispatch({ type: "filteringCards", formdata: filterFormData });
+  }
+
+  let ownerNameList = [
+    ...new Set(state.fixedCardData.map((card) => card.owner_name)),
+  ];
 
   return (
-    <form style={{top: state.filterCoordinates.top + 40, left: state.filterCoordinates.left - 200}}>
+    <form
+      onSubmit={(e) => e.preventDefault()}
+      style={{
+        top: state.filterCoordinates.top + 40,
+        left: state.filterCoordinates.left - 200,
+      }}
+    >
       <label>Type</label>
       <div>
         <input
           type="checkbox"
-          checked={subscription}
-          onChange={handleSubscriptionChange}
+          name="subscription"
+          checked={filterFormData.subscription}
+          onChange={handleFormDataChange}
         />
         Subscription
       </div>
       <div>
-        <input type="checkbox" checked={burner} onChange={handleBurnerChange} />
+        <input
+          type="checkbox"
+          name="burner"
+          checked={filterFormData.burner}
+          onChange={handleFormDataChange}
+        />
         Burner
       </div>
       <label>Cardholder</label>
       <div>
-        <select value={cardholder} onChange={handleCardholderChange}>
-          <option value="1">1</option>
-          <option value="2">2</option>
-          <option value="3">3</option>
+        <select
+          value={filterFormData.cardholder}
+          name="cardholder"
+          onChange={handleFormDataChange}
+        >
+          <option key={nanoid()} value="">
+            {"Choose Cardholder"}
+          </option>
+          {ownerNameList.map((item, index) => (
+            <option key={index} value={item}>
+              {item}
+            </option>
+          ))}
         </select>
       </div>
       <div>
-        <button type="submit">Apply</button>
-        <button type="reset">Clear</button>
+        <button type="submit" onClick={handleSubmit}>
+          Apply
+        </button>
+        <button type="reset" onClick={handleResetForm}>Clear</button>
       </div>
     </form>
   );
