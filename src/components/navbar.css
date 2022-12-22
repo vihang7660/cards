@@ -13,14 +13,17 @@
 .navbar__button {
   background-color: transparent;
   border: none;
-  color: black;
+  color: rgb(109, 103, 103);
   cursor: pointer;
   font-size: 16px;
   outline: none;
   text-decoration: none;
   transition: background-color 0.2s;
+  padding-bottom: 10px;
 }
 
 .navbar__button.active {
   font-weight: bold;
+  color: black;
+  border-bottom: 2px solid rgb(226, 58, 58);
 }

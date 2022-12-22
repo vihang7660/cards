@@ -5,7 +5,7 @@ import { BsFilter, BsSearch } from "react-icons/bs";
 import { useCards, useCardsDispatch } from "../CardsContext";
 import Filter from "./Filter";
 
-export default function BlockedCards() {
+export default function MyCards() {
   const [isSearchBoxVisible, setSearchBoxVisibility] = useState(false);
   const state = useCards();
   const dispatch = useCardsDispatch();
@@ -48,12 +48,12 @@ export default function BlockedCards() {
     dispatch({ type: "displayingFilter" });
   }
 
-  function handleBlockedCard(id) {
-    dispatch({ type: "removeFromBlockedCards", id });
+  function handleMyCard(id) {
+    dispatch({ type: "removeFromMyCard", id });
   }
 
   let cardsList = state.cardsInfo
-    .filter((card) => card.isBlocked)
+    .filter((card) => card.isMyCard)
     .map((item) => (
       <Card
         name={item.name}
@@ -69,10 +69,10 @@ export default function BlockedCards() {
         limit={item.limit}
         getOwner={getOwner}
         id={item.id}
-        isBlocked={item.isBlocked}
-        blockedCardMessage={"Remove from Blocked cards"}
-        handleBlockedCard={handleBlockedCard}
-        hideMyCardButton={true}
+        isMyCard={item.isMyCard}
+        handleMyCard={handleMyCard}
+        myCardMessage={"Remove from my cards"}
+        hideBlockButton={true}
       />
     ));
 

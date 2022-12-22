@@ -4,7 +4,7 @@ import CardsList from "./components/CardsList";
 import Filter from "./components/Filter";
 import Navbar from "./components/Navbar";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import YourCards from "./components/YourCards";
+import MyCards from "./components/MyCards";
 import BlockedCards from "./components/BlockedCards";
 import Header from "./components/Header";
 
@@ -19,7 +19,7 @@ export default function App() {
           <Navbar />
           <Routes>
             <Route path="/" element={<CardsList />} />
-            <Route path="yourcards" element={<YourCards />} />
+            <Route path="mycards" element={<MyCards />} />
             <Route path="blocked" element={<BlockedCards />} />
           </Routes>
         </BrowserRouter>

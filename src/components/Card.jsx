@@ -16,6 +16,15 @@ export default function Card({
   limit,
   getOwner,
   owner_id,
+  handleMyCard,
+  handleBlockedCard,
+  id,
+  isMyCard,
+  isBlocked,
+  myCardMessage,
+  blockedCardMessage,
+  hideBlockButton,
+  hideMyCardButton,
 }) {
   const state = useCards();
   let capacity = available_to_spend + spent;
@@ -67,6 +76,28 @@ export default function Card({
         <div>Available to spend</div>
         <BsDot color="green" size={45} />
         <div className="currency">{available_to_spend} SGD</div>
+      </div>
+      <div className="btn">
+        {hideMyCardButton || (
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              handleMyCard(id);
+            }}
+          >
+            {isMyCard ? myCardMessage : "Add to my cards"}
+          </button>
+        )}
+        {hideBlockButton || (
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              handleBlockedCard(id);
+            }}
+          >
+            {isBlocked ? blockedCardMessage : "Block"}
+          </button>
+        )}
       </div>
     </section>
   );

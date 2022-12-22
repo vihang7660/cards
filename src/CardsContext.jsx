@@ -5,6 +5,12 @@ const CardsContext = createContext(null);
 
 const CardsDispatchContext = createContext(null);
 
+const cardsData = data.map((item) => ({
+  ...item,
+  isMyCard: false,
+  isBlocked: false,
+}));
+
 export function CardsProvider({ children }) {
   const [state, dispatch] = useReducer(reducer, initialState);
 
@@ -66,17 +72,60 @@ function reducer(state, action) {
       ),
     };
   } else if (action.type === "addingScrollData") {
-    return { ...state, cardsInfo: [...data.slice(0, action.page * rows)] };
+    return {
+      ...state,
+      cardsInfo: [...state.fixedCardData.slice(0, action.page * rows)],
+    };
   } else if (action.type === "filteringOff") {
-    return {...state, isFilterOpen: false, isFiltered: true}
+    return { ...state, isFilterOpen: false, isFiltered: true };
+  } else if (action.type === "addToMyCard") {
+    return {
+      ...state,
+      cardsInfo: state.cardsInfo.map((card) =>
+        card.id === action.id ? { ...card, isMyCard: true, isBlocked: false } : card
+      ),
+      fixedCardData: state.fixedCardData.map((card) =>
+        card.id === action.id ? { ...card, isMyCard: true, isBlocked: false } : card
+      ),
+    };
+  } else if (action.type === "removeFromMyCard") {
+    return {
+      ...state,
+      cardsInfo: state.cardsInfo.map((card) =>
+        card.id === action.id ? { ...card, isMyCard: false } : card
+      ),
+      fixedCardData: state.fixedCardData.map((card) =>
+        card.id === action.id ? { ...card, isMyCard: false } : card
+      ),
+    };
+  } else if (action.type === "addToBlockedCards") {
+    return {
+      ...state,
+      cardsInfo: state.cardsInfo.map((card) =>
+        card.id === action.id ? { ...card, isBlocked: true, isMyCard: false } : card
+      ),
+      fixedCardData: state.fixedCardData.map((card) =>
+        card.id === action.id ? { ...card, isBlocked: true, isMyCard: false } : card
+      ),
+    };
+  } else if (action.type === "removeFromBlockedCards") {
+    return {
+      ...state,
+      cardsInfo: state.cardsInfo.map((card) =>
+        card.id === action.id ? { ...card, isBlocked: false } : card
+      ),
+      fixedCardData: state.fixedCardData.map((card) =>
+        card.id === action.id ? { ...card, isBlocked: false } : card
+      ),
+    };
   }
 }
 
 const rows = 5;
 
 const initialState = {
-  cardsInfo: data.slice(0, 5),
-  fixedCardData: data,
+  cardsInfo: cardsData.slice(0, 5),
+  fixedCardData: cardsData,
   isFilterOpen: false,
   filterCoordinates: {},
   formData: { subscription: true, burner: true, cardholder: "" },

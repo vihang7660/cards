@@ -1,17 +1,16 @@
 import React, { useState, useEffect } from "react";
 import Card from "./Card";
 import "./cardsList.css";
-import { BsFilter } from "react-icons/bs";
+import { BsFilter, BsSearch } from "react-icons/bs";
 import { useCards, useCardsDispatch } from "../CardsContext";
 import Filter from "./Filter";
 
 export default function CardsList() {
+  const [isSearchBoxVisible, setSearchBoxVisibility] = useState(false);
   const state = useCards();
   const dispatch = useCardsDispatch();
 
   const [page, setPage] = useState(1);
-
-  console.log(state.isFiltered);
 
   useEffect(() => {
     if (!state.isFiltered) {
@@ -49,6 +48,14 @@ export default function CardsList() {
     dispatch({ type: "displayingFilter" });
   }
 
+  function handleMyCard(id) {
+    dispatch({ type: "addToMyCard", id });
+  }
+
+  function handleBlockedCard(id) {
+    dispatch({ type: "addToBlockedCards", id });
+  }
+
   let cardsList = state.cardsInfo.map((item) => (
     <Card
       name={item.name}
@@ -63,21 +70,38 @@ export default function CardsList() {
       key={item.id}
       limit={item.limit}
       getOwner={getOwner}
+      handleMyCard={handleMyCard}
+      id={item.id}
+      isMyCard={item.isMyCard}
+      myCardMessage={"Added to my cards"}
+      isBlocked={item.isBlocked}
+      blockedCardMessage={"Blocked"}
+      handleBlockedCard={handleBlockedCard}
     />
   ));
   return (
     <main onClick={() => dispatch({ type: "hideFilterBox" })}>
       <div className="searchBar">
-        <form className="searchForm" onSubmit={(e) => e.preventDefault()}>
-          <input
-            onChange={(e) => {
-              handleSearch(e);
-              dispatch({ type: "filteringOff" });
-            }}
-            value={state.searchText}
-            type="text"
-          />
-        </form>
+        {isSearchBoxVisible ? (
+          <form className="searchForm" onSubmit={(e) => e.preventDefault()}>
+            <input
+              autoFocus={true}
+              onChange={(e) => {
+                handleSearch(e);
+                dispatch({ type: "filteringOff" });
+              }}
+              value={state.searchText}
+              type="text"
+            />
+          </form>
+        ) : (
+          <div
+            className="searchIcon"
+            onClick={() => setSearchBoxVisibility(true)}
+          >
+            <BsSearch size={20} />{" "}
+          </div>
+        )}
         <button className="filter-button" onClick={handleFilterBox}>
           <BsFilter size={25} /> <div>Filter</div>
         </button>
