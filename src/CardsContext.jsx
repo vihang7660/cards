@@ -1,18 +1,28 @@
-import { createContext, useContext, useReducer } from "react";
-import data from "./data";
+import { createContext, useContext, useReducer, useEffect } from "react";
+import { nanoid } from "nanoid";
 
 const CardsContext = createContext(null);
 
 const CardsDispatchContext = createContext(null);
 
-const cardsData = data.map((item) => ({
-  ...item,
-  isMyCard: false,
-  isBlocked: false,
-}));
-
 export function CardsProvider({ children }) {
   const [state, dispatch] = useReducer(reducer, initialState);
+
+  useEffect(() => {
+    fetch("https://63a921d6f4962215b58dc32e.mockapi.io/user")
+      .then((resp) => resp.json())
+      .then((data) =>
+        dispatch({
+          type: "fetching",
+          data: data.map((item) => ({
+            ...item,
+            id: nanoid(),
+            isMyCard: false,
+            isBlocked: false,
+          })),
+        })
+      );
+  }, []);
 
   return (
     <CardsContext.Provider value={state}>
@@ -32,7 +42,13 @@ export function useCardsDispatch() {
 }
 
 function reducer(state, action) {
-  if (action.type === "gettingCoordinates") {
+  if (action.type === "fetching") {
+    return {
+      ...state,
+      cardsInfo: action.data.slice(0, 10),
+      totalCardsData: action.data,
+    };
+  } else if (action.type === "gettingCoordinates") {
     return {
       ...state,
       filterCoordinates: { top: action.top, left: action.left },
@@ -42,7 +58,7 @@ function reducer(state, action) {
   } else if (action.type === "hideFilterBox") {
     return { ...state, isFilterOpen: false };
   } else if (action.type === "filteringCards") {
-    const filterCardData = state.fixedCardData.filter((card) => {
+    const filterCardData = state.totalCardsData.filter((card) => {
       return (
         ((action.formdata.subscription && card.card_type === "subscription") ||
           (action.formdata.burner && card.card_type === "burner")) &&
@@ -60,75 +76,86 @@ function reducer(state, action) {
     return {
       ...state,
       searchText: action.text,
-      cardsInfo: state.fixedCardData.filter((card) =>
+      cardsInfo: state.totalCardsData.filter((card) =>
         card.name.toLowerCase().includes(action.text.toLowerCase())
       ),
     };
   } else if (action.type === "gettingOwnerCard") {
     return {
       ...state,
-      cardsInfo: state.fixedCardData.filter(
-        (card) => card.owner_id === action.ownerID
+      cardsInfo: state.totalCardsData.filter(
+        (card) => card.ownerId === action.ownerID
       ),
     };
-  } else if (action.type === "addingScrollData") {
-    return {
-      ...state,
-      cardsInfo: [...state.fixedCardData.slice(0, action.page * rows)],
-    };
-  } else if (action.type === "filteringOff") {
-    return { ...state, isFilterOpen: false, isFiltered: true };
   } else if (action.type === "addToMyCard") {
     return {
       ...state,
-      cardsInfo: state.cardsInfo.map((card) =>
-        card.id === action.id ? { ...card, isMyCard: true, isBlocked: false } : card
+      totalCardsData: state.totalCardsData.map((card) =>
+        card.id === action.id
+          ? { ...card, isMyCard: true, isBlocked: false }
+          : card
       ),
-      fixedCardData: state.fixedCardData.map((card) =>
-        card.id === action.id ? { ...card, isMyCard: true, isBlocked: false } : card
+      cardsInfo: state.cardsInfo.map((card) =>
+        card.id === action.id
+          ? { ...card, isMyCard: true, isBlocked: false }
+          : card
       ),
     };
   } else if (action.type === "removeFromMyCard") {
     return {
       ...state,
-      cardsInfo: state.cardsInfo.map((card) =>
+      totalCardsData: state.totalCardsData.map((card) =>
         card.id === action.id ? { ...card, isMyCard: false } : card
       ),
-      fixedCardData: state.fixedCardData.map((card) =>
+      cardsInfo: state.cardsInfo.map((card) =>
         card.id === action.id ? { ...card, isMyCard: false } : card
       ),
     };
   } else if (action.type === "addToBlockedCards") {
     return {
       ...state,
-      cardsInfo: state.cardsInfo.map((card) =>
-        card.id === action.id ? { ...card, isBlocked: true, isMyCard: false } : card
+      totalCardsData: state.totalCardsData.map((card) =>
+        card.id === action.id
+          ? { ...card, isBlocked: true, isMyCard: false }
+          : card
       ),
-      fixedCardData: state.fixedCardData.map((card) =>
-        card.id === action.id ? { ...card, isBlocked: true, isMyCard: false } : card
+      cardsInfo: state.cardsInfo.map((card) =>
+        card.id === action.id
+          ? { ...card, isMyCard: false, isBlocked: true }
+          : card
       ),
     };
   } else if (action.type === "removeFromBlockedCards") {
     return {
       ...state,
+      totalCardsData: state.totalCardsData.map((card) =>
+        card.id === action.id ? { ...card, isBlocked: false } : card
+      ),
       cardsInfo: state.cardsInfo.map((card) =>
         card.id === action.id ? { ...card, isBlocked: false } : card
       ),
-      fixedCardData: state.fixedCardData.map((card) =>
-        card.id === action.id ? { ...card, isBlocked: false } : card
-      ),
     };
+  } else if (action.type === "scrollingDown") {
+    return {
+      ...state,
+      cardsInfo: [
+        ...state.cardsInfo,
+        ...[...state.totalCardsData].splice(state.cardsInfo.length, 10),
+      ],
+    };
+  } else if (action.type === "turningHasMoreOff") {
+    return { ...state, hasMoreItems: false };
+  } else {
+    return state;
   }
 }
 
-const rows = 5;
-
 const initialState = {
-  cardsInfo: cardsData.slice(0, 5),
-  fixedCardData: cardsData,
+  cardsInfo: [],
+  totalCardsData: [],
   isFilterOpen: false,
   filterCoordinates: {},
   formData: { subscription: true, burner: true, cardholder: "" },
   searchText: "",
-  isFiltered: false,
+  hasMoreItems: true,
 };

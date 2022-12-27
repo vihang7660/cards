@@ -1,17 +1,23 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useCards, useCardsDispatch } from "../CardsContext";
 import { nanoid } from "nanoid";
 import "./filter.css";
 
 export default function Filter() {
   const state = useCards();
+  const dispatch = useCardsDispatch();
   const [filterFormData, setFormData] = useState({
     subscription: state.formData.subscription,
     burner: state.formData.burner,
     cardholder: state.formData.cardholder,
   });
 
-  const dispatch = useCardsDispatch();
+  useEffect(() => {
+    document.addEventListener("click", handleOutsideClick);
+    return () => {
+      document.removeEventListener("click", handleOutsideClick);
+    };
+  }, []);
 
   function handleFormDataChange(e) {
     const { name, value, type, checked } = e.target;
@@ -24,21 +30,30 @@ export default function Filter() {
   }
 
   function handleResetForm(e) {
-    e.preventDefault()
-    setFormData({ subscription: true, burner: true, cardholder: "" })
+    e.preventDefault();
+    setFormData({ subscription: true, burner: true, cardholder: "" });
+  }
+
+  function handleOutsideClick(e) {
+    if (e.target.closest(".filterForm")) {
+      return;
+    }
+    dispatch({ type: "hideFilterBox" });
   }
 
   function handleSubmit() {
     dispatch({ type: "filteringCards", formdata: filterFormData });
+    dispatch({ type: "turningHasMoreOff" });
+    dispatch({ type: "hideFilterBox" });
   }
 
-  let ownerNameList = [
-    ...new Set(state.fixedCardData.map((card) => card.owner_name)),
+  const ownerNameList = [
+    ...new Set(state.totalCardsData.map((card) => card.owner_name)),
   ];
 
   return (
     <form
-    className="filterForm"
+      className="filterForm"
       onSubmit={(e) => e.preventDefault()}
       style={{
         top: state.filterCoordinates.top + 40,
@@ -72,7 +87,7 @@ export default function Filter() {
           onChange={handleFormDataChange}
         >
           <option key={nanoid()} value="">
-            {"Choose Cardholder"}
+            Choose Cardholder
           </option>
           {ownerNameList.map((item, index) => (
             <option key={index} value={item}>
@@ -82,13 +97,12 @@ export default function Filter() {
         </select>
       </div>
       <div>
-        <button type="submit" onClick={() => {
-          handleSubmit()
-          dispatch({type: 'filteringOff'})
-        }}>
+        <button type="submit" onClick={handleSubmit}>
           Apply
         </button>
-        <button type="reset" onClick={handleResetForm}>Clear</button>
+        <button type="reset" onClick={handleResetForm}>
+          Clear
+        </button>
       </div>
     </form>
   );

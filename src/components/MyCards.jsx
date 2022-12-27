@@ -3,44 +3,23 @@ import Card from "./Card";
 import "./cardsList.css";
 import { BsFilter, BsSearch } from "react-icons/bs";
 import { useCards, useCardsDispatch } from "../CardsContext";
-import Filter from "./Filter";
 
 export default function MyCards() {
   const [isSearchBoxVisible, setSearchBoxVisibility] = useState(false);
   const state = useCards();
   const dispatch = useCardsDispatch();
 
-  const [page, setPage] = useState(1);
-
-  useEffect(() => {
-    if (!state.isFiltered) {
-      dispatch({ type: "addingScrollData", page });
-    }
-  }, [page]);
-
-  const handlescroll = () => {
-    if (
-      window.innerHeight + document.documentElement.scrollTop + 1 >=
-      document.documentElement.scrollHeight
-    ) {
-      setPage((prev) => prev + 1);
-    }
-  };
-
-  useEffect(() => {
-    window.addEventListener("scroll", handlescroll);
-  }, []);
-
   function handleSearch(e) {
     dispatch({ type: "searching", text: e.target.value });
+    dispatch({ type: "turningHasMoreOff" });
   }
 
-  function getOwner(ownerID) {
+  function getOwnerCards(ownerID) {
     dispatch({ type: "gettingOwnerCard", ownerID });
-    dispatch({ type: "filteringOff" });
+    dispatch({ type: "turningHasMoreOff" });
   }
 
-  function handleFilterBox(event) {
+  function showFilterBox(event) {
     const tempBtn = event.target.getBoundingClientRect();
     event.stopPropagation();
     let { top, left } = tempBtn;
@@ -48,7 +27,7 @@ export default function MyCards() {
     dispatch({ type: "displayingFilter" });
   }
 
-  function handleMyCard(id) {
+  function removeFromMyCards(id) {
     dispatch({ type: "removeFromMyCard", id });
   }
 
@@ -62,31 +41,28 @@ export default function MyCards() {
         available_to_spend={item.available_to_spend.value}
         currency={"SGD"}
         owner_name={item.owner_name}
-        owner_id={item.owner_id}
+        ownerId={item.ownerId}
         card_type={item.card_type}
         expiry={item.expiry}
         key={item.id}
         limit={item.limit}
-        getOwner={getOwner}
+        getOwnerCards={getOwnerCards}
         id={item.id}
         isMyCard={item.isMyCard}
-        handleMyCard={handleMyCard}
+        handleMyCard={removeFromMyCards}
         myCardMessage={"Remove from my cards"}
         hideBlockButton={true}
       />
     ));
 
   return (
-    <main onClick={() => dispatch({ type: "hideFilterBox" })}>
+    <main>
       <div className="searchBar">
         {isSearchBoxVisible ? (
           <form className="searchForm" onSubmit={(e) => e.preventDefault()}>
             <input
               autoFocus={true}
-              onChange={(e) => {
-                handleSearch(e);
-                dispatch({ type: "filteringOff" });
-              }}
+              onChange={handleSearch}
               value={state.searchText}
               type="text"
             />
@@ -99,7 +75,7 @@ export default function MyCards() {
             <BsSearch size={20} />{" "}
           </div>
         )}
-        <button className="filter-button" onClick={handleFilterBox}>
+        <button className="filter-button" onClick={showFilterBox}>
           <BsFilter size={25} /> <div>Filter</div>
         </button>
       </div>

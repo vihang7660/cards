@@ -1,6 +1,4 @@
-
-
-.cardsList {
+.cardsList,.infinite-scroll-component  {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;

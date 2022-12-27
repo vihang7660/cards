@@ -1,5 +1,4 @@
 import React from "react";
-import { useCards } from "../CardsContext";
 import "./card.css";
 import { BsDot } from "react-icons/bs";
 import { GiBurningEye } from "react-icons/gi";
@@ -14,8 +13,8 @@ export default function Card({
   expiry,
   card_type,
   limit,
-  getOwner,
-  owner_id,
+  getOwnerCards,
+  ownerId,
   handleMyCard,
   handleBlockedCard,
   id,
@@ -26,20 +25,19 @@ export default function Card({
   hideBlockButton,
   hideMyCardButton,
 }) {
-  const state = useCards();
   let capacity = available_to_spend + spent;
 
   return (
-    <section className="card-container" onClick={() => getOwner(owner_id)}>
+    <section className="card-container" onClick={() => getOwnerCards(ownerId)}>
       <div className="header">
         <h2>{name}</h2>
         <div className="owner-info">
           {owner_name} <BsDot /> {budget_name}
         </div>
         {card_type === "burner" ? (
-          <GiBurningEye className="logo" size={35} />
+          <GiBurningEye className="logo" size={35} color="red" />
         ) : (
-          <MdAutorenew className="logo" size={35} />
+          <MdAutorenew className="logo" size={35} color="red" />
         )}
       </div>
 
