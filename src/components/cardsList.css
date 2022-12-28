@@ -1,11 +1,11 @@
-.cardsList,.infinite-scroll-component  {
+.cardsList,
+.infinite-scroll-component {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
 }
 
 .filter-button {
-  padding-right: auto;
   display: flex;
   align-items: center;
   gap: 10px;
