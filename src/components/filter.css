@@ -13,7 +13,7 @@
   padding: 20px;
 }
 
-label {
+.filterForm label {
   font-size: 14px;
   font-weight: bold;
   margin-bottom: 10px;
@@ -25,7 +25,7 @@ input[type="checkbox"] {
   margin-right: 10px;
 }
 
-select {
+.filterForm select {
   width: 100%;
   height: 30px;
   margin-bottom: 20px;

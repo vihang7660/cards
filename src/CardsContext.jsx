@@ -42,111 +42,127 @@ export function useCardsDispatch() {
 }
 
 function reducer(state, action) {
-  if (action.type === "fetching") {
-    return {
-      ...state,
-      cardsInfo: action.data.slice(0, 10),
-      totalCardsData: action.data,
-    };
-  } else if (action.type === "gettingCoordinates") {
-    return {
-      ...state,
-      filterCoordinates: { top: action.top, left: action.left },
-    };
-  } else if (action.type === "displayingFilter") {
-    return { ...state, isFilterOpen: true };
-  } else if (action.type === "hideFilterBox") {
-    return { ...state, isFilterOpen: false };
-  } else if (action.type === "filteringCards") {
-    const filterCardData = state.totalCardsData.filter((card) => {
-      return (
-        ((action.formdata.subscription && card.card_type === "subscription") ||
-          (action.formdata.burner && card.card_type === "burner")) &&
-        (!action.formdata.cardholder ||
-          card.owner_name === action.formdata.cardholder)
-      );
-    });
+  switch (action.type) {
+    case "fetching": {
+      return {
+        ...state,
+        cardsInfo: action.data.slice(0, 10),
+        totalCardsData: action.data,
+      };
+    }
+    case "gettingCoordinates": {
+      return {
+        ...state,
+        filterCoordinates: { top: action.top, left: action.left },
+      };
+    }
+    case "displayingFilter": {
+      return { ...state, isFilterOpen: true };
+    }
+    case "hideFilterBox": {
+      return { ...state, isFilterOpen: false };
+    }
+    case "filteringCards": {
+      const filterCardData = state.totalCardsData.filter((card) => {
+        return (
+          ((action.formdata.subscription &&
+            card.card_type === "subscription") ||
+            (action.formdata.burner && card.card_type === "burner")) &&
+          (!action.formdata.cardholder ||
+            card.owner_name === action.formdata.cardholder)
+        );
+      });
 
-    return {
-      ...state,
-      formData: action.formdata,
-      cardsInfo: filterCardData,
-    };
-  } else if (action.type === "searching") {
-    return {
-      ...state,
-      searchText: action.text,
-      cardsInfo: state.totalCardsData.filter((card) =>
-        card.name.toLowerCase().includes(action.text.toLowerCase())
-      ),
-    };
-  } else if (action.type === "gettingOwnerCard") {
-    return {
-      ...state,
-      cardsInfo: state.totalCardsData.filter(
-        (card) => card.ownerId === action.ownerID
-      ),
-    };
-  } else if (action.type === "addToMyCard") {
-    return {
-      ...state,
-      totalCardsData: state.totalCardsData.map((card) =>
-        card.id === action.id
-          ? { ...card, isMyCard: true, isBlocked: false }
-          : card
-      ),
-      cardsInfo: state.cardsInfo.map((card) =>
-        card.id === action.id
-          ? { ...card, isMyCard: true, isBlocked: false }
-          : card
-      ),
-    };
-  } else if (action.type === "removeFromMyCard") {
-    return {
-      ...state,
-      totalCardsData: state.totalCardsData.map((card) =>
-        card.id === action.id ? { ...card, isMyCard: false } : card
-      ),
-      cardsInfo: state.cardsInfo.map((card) =>
-        card.id === action.id ? { ...card, isMyCard: false } : card
-      ),
-    };
-  } else if (action.type === "addToBlockedCards") {
-    return {
-      ...state,
-      totalCardsData: state.totalCardsData.map((card) =>
-        card.id === action.id
-          ? { ...card, isBlocked: true, isMyCard: false }
-          : card
-      ),
-      cardsInfo: state.cardsInfo.map((card) =>
-        card.id === action.id
-          ? { ...card, isMyCard: false, isBlocked: true }
-          : card
-      ),
-    };
-  } else if (action.type === "removeFromBlockedCards") {
-    return {
-      ...state,
-      totalCardsData: state.totalCardsData.map((card) =>
-        card.id === action.id ? { ...card, isBlocked: false } : card
-      ),
-      cardsInfo: state.cardsInfo.map((card) =>
-        card.id === action.id ? { ...card, isBlocked: false } : card
-      ),
-    };
-  } else if (action.type === "scrollingDown") {
-    return {
-      ...state,
-      cardsInfo: [
-        ...state.cardsInfo,
-        ...[...state.totalCardsData].splice(state.cardsInfo.length, 10),
-      ],
-    };
-  } else if (action.type === "turningHasMoreOff") {
-    return { ...state, hasMoreItems: false };
-  } else {
-    return state;
+      return {
+        ...state,
+        formData: action.formdata,
+        cardsInfo: filterCardData,
+      };
+    }
+    case "searching": {
+      return {
+        ...state,
+        searchText: action.text,
+        cardsInfo: state.totalCardsData.filter((card) =>
+          card.name.toLowerCase().includes(action.text.toLowerCase())
+        ),
+      };
+    }
+    case "gettingOwnerCard": {
+      return {
+        ...state,
+        cardsInfo: state.totalCardsData.filter(
+          (card) => card.ownerId === action.ownerID
+        ),
+      };
+    }
+    case "addToMyCard": {
+      return {
+        ...state,
+        totalCardsData: state.totalCardsData.map((card) =>
+          card.id === action.id
+            ? { ...card, isMyCard: true, isBlocked: false }
+            : card
+        ),
+        cardsInfo: state.cardsInfo.map((card) =>
+          card.id === action.id
+            ? { ...card, isMyCard: true, isBlocked: false }
+            : card
+        ),
+      };
+    }
+    case "removeFromMyCard": {
+      return {
+        ...state,
+        totalCardsData: state.totalCardsData.map((card) =>
+          card.id === action.id ? { ...card, isMyCard: false } : card
+        ),
+        cardsInfo: state.cardsInfo.map((card) =>
+          card.id === action.id ? { ...card, isMyCard: false } : card
+        ),
+      };
+    }
+    case "addToBlockedCards": {
+      return {
+        ...state,
+        totalCardsData: state.totalCardsData.map((card) =>
+          card.id === action.id
+            ? { ...card, isBlocked: true, isMyCard: false }
+            : card
+        ),
+        cardsInfo: state.cardsInfo.map((card) =>
+          card.id === action.id
+            ? { ...card, isMyCard: false, isBlocked: true }
+            : card
+        ),
+      };
+    }
+    case "removeFromBlockedCards": {
+      return {
+        ...state,
+        totalCardsData: state.totalCardsData.map((card) =>
+          card.id === action.id ? { ...card, isBlocked: false } : card
+        ),
+        cardsInfo: state.cardsInfo.map((card) =>
+          card.id === action.id ? { ...card, isBlocked: false } : card
+        ),
+      };
+    }
+    case "scrollingDown": {
+      return {
+        ...state,
+        cardsInfo: [
+          ...state.cardsInfo,
+          ...[...state.totalCardsData].splice(state.cardsInfo.length, 10),
+        ],
+      };
+    }
+    case "turningHasMoreOff": {
+      return { ...state, hasMoreItems: false };
+    }
+    default: {
+      return state;
+    }
   }
 }
 
